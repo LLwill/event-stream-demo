@@ -5,7 +5,7 @@ import EventStreamComponent from './components/event-stream';
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <EventStreamComponent />
     </div>
   );

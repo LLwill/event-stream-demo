@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 function EventStreamComponent() {
   const [messages, setMessages] = useState([]); // 存储EventStream数据的状态
@@ -11,9 +14,8 @@ function EventStreamComponent() {
 
     // 监听message事件，在收到新消息时更新数据
     eventSource?.current.addEventListener('message', (event) => {
-      console.log(event, 'event');
-      const data = event.data;
-      setMessages((prevMessages) => [...prevMessages, data]); // 将新数据添加到数组中
+      const data = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, data.message.content.parts[0]]); // 将新数据添加到数组中
     });
 
     return () => {
@@ -30,12 +32,30 @@ function EventStreamComponent() {
   return (
     <div>
       <h1>EventStream Content:</h1>
-      <ul>
         {messages.map((message) => (
-          <li key={message.id}>{message}</li>
+          <ReactMarkdown key={message.id} components={{
+            code({node, inline, className, children, ...props}) {
+              console.log(inline, className, children[0]);
+              const match = /language-(\w+)/.exec(className || '')
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  {...props}
+                  children={String(children).replace(/\n$/, '')}
+                  style={docco}
+                  language={match[1]}
+                  PreTag="div"
+                />
+              ) : (
+                <code {...props} className={className}>
+                  {children}
+                </code>
+              )
+            }
+          }}>{message}</ReactMarkdown>
         ))}
-      </ul>
-      <button onClick={handleOnClick}>stop</button>
+        <div style={{position: 'fixed', top: '10px', right: '20px'}}>
+        <button onClick={handleOnClick}>stop</button>
+        </div>
     </div>
   );
 }
