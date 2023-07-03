@@ -10,7 +10,7 @@ function EventStreamComponent() {
 
   useEffect(() => {
     // 创建EventSource对象，并连接到EventStream服务器
-    eventSource.current = new EventSource('http://127.0.0.1:3000/');
+    eventSource.current = new EventSource('/api');
 
     // 监听message事件，在收到新消息时更新数据
     eventSource?.current.addEventListener('message', (event) => {

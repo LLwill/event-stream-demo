@@ -8,7 +8,7 @@ const eventEmitter = new EventEmitter();
 const requestHandler = (request, response) => {
   // 设置响应头，指定使用EventStream数据格式
   response.writeHead(200, {
-    'Content-Type': 'text/event-stream',
+    'Content-Type': 'text/event-stream; charset=utf-8',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
     'Access-Control-Allow-Origin': '*',
